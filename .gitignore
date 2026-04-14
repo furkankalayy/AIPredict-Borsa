@@ -1,0 +1,19 @@
+# --- Python (Backend) Yasaklıları ---
+borsa-backend/venv/
+borsa-backend/env/
+borsa-backend/__pycache__/
+borsa-backend/*.pyc
+borsa-backend/.env
+
+# --- Flutter (Frontend) Yasaklıları ---
+borsa_app/.dart_tool/
+borsa_app/build/
+borsa_app/.idea/
+borsa_app/*.iml
+borsa_app/.flutter-plugins
+borsa_app/.flutter-plugins-dependencies
+borsa_app/pubspec.lock
+
+# --- Genel Sistem Dosyaları ---
+.DS_Store
+Thumbs.db
