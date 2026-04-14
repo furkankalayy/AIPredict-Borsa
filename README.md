@@ -34,12 +34,34 @@ Projeyi kendi bilgisayarınızda çalıştırmak için aşağıdaki adımları i
 
 ### 1. Sunucuyu (Backend) Başlatma
 Terminalinizi açın ve `borsa-backend` klasörüne gidin:
-```bash
+
 cd borsa-backend
 
-# Gerekli kütüphaneleri yükleyin (Eğer requirements.txt varsa)
-# veya manuel olarak: pip install fastapi uvicorn yfinance tensorflow pandas numpy scikit-learn
-pip install -r requirements.txt
+# Gerekli kütüphaneleri yükleyin
+pip install fastapi uvicorn yfinance tensorflow pandas numpy scikit-learn pydantic
 
 # FastAPI sunucusunu başlatın
 python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+*(Sunucu varsayılan olarak http://localhost:8000 adresinde çalışacaktır.)*
+
+### 2. Mobil Uygulamayı (Frontend) Başlatma
+Yeni bir terminal sekmesi açın ve `borsa_app` klasörüne gidin:
+
+cd borsa_app
+
+# Gerekli paketleri indirin
+flutter pub get
+
+# Uygulamayı bağlı bir cihaza veya emülatöre kurun
+flutter run
+
+---
+
+## 🧠 Çalışma Mantığı ve Güvenlik Ağları
+Uygulama sadece yapay zeka modelinin tahminlerine körü körüne güvenmez. Python sunucusuna entegre edilmiş **"Gerçeklik Filtresi"** sayesinde:
+* Hisse "Aşırı Alım" (RSI > 65) bölgesindeyse, model yükseliş öngörse bile algoritma bunu aşağı yönlü revize eder.
+* "Volatilite Kelepçesi", hissenin o anki standart sapmasını hesaplayarak yapay zekanın mantıksız ve aşırı uç tahminler yapmasını engeller.
+
+---
+*Geliştirici Notu: Bu proje finansal bir tavsiye sistemi değil, teknik analiz ve makine öğrenmesi konseptlerinin mobil platforma nasıl entegre edilebileceğini gösteren bir mühendislik çalışmasıdır.*
