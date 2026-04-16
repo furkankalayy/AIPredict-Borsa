@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+
+<html class="light" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#3e4949",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed-variant": "#474742",
+                        "surface-container-low": "#f7f3ef",
+                        "on-tertiary-fixed-variant": "#822800",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#380c00",
+                        "inverse-on-surface": "#f4f0ec",
+                        "background": "#fdf9f4",
+                        "on-secondary-fixed": "#1c1c18",
+                        "surface-container-high": "#ece7e3",
+                        "tertiary-container": "#bf5025",
+                        "tertiary-fixed-dim": "#ffb59c",
+                        "surface-bright": "#fdf9f4",
+                        "surface-tint": "#0e6969",
+                        "primary-container": "#2e7e7e",
+                        "primary": "#036565",
+                        "surface-container": "#f1ede9",
+                        "on-surface": "#1c1b19",
+                        "on-primary-fixed-variant": "#004f50",
+                        "on-background": "#1c1b19",
+                        "secondary-fixed": "#e5e2db",
+                        "secondary-fixed-dim": "#c9c6c0",
+                        "tertiary-fixed": "#ffdbcf",
+                        "on-primary-container": "#e3fffe",
+                        "primary-fixed-dim": "#88d3d3",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#a4f0ef",
+                        "surface-container-highest": "#e6e2de",
+                        "outline": "#6e7979",
+                        "on-secondary-container": "#65645f",
+                        "surface": "#fdf9f4",
+                        "on-primary-fixed": "#002020",
+                        "inverse-primary": "#88d3d3",
+                        "secondary": "#5f5e59",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#fff8f6",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#e6e2de",
+                        "inverse-surface": "#31302e",
+                        "tertiary": "#9e380d",
+                        "surface-dim": "#ddd9d5",
+                        "secondary-container": "#e5e2db",
+                        "outline-variant": "#bdc9c8",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; background-color: #fdf9f4; color: #1c1b19; }
+        .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-panel { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-6 py-4 w-full sticky top-0 z-40 bg-gradient-to-b from-[#fdf9f4] to-[#f7f3ef] dark:from-stone-950 dark:to-stone-900">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-secondary-container">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="close-up portrait of a professional investor with a calm expression, soft studio lighting, organic warm tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9cIulBEpYyjZRc-M3zAQQuNla0itVw7PNlpaHYQJhATq5lbeH-FzFgM3Cm6-Bmm9lZJb36rLmLacYQQ3YDv3BdTbtyzZABYaYrdVXy_h3sM7VTIA9GCHgz16dhH8Qob-7D1vA95VseXiOTxc5CBr0my9PhGWpAV4AYaV_G40bTEeq_JURhHy-pSzk2OhWdcrCOJP3mi1W_xi3b3EEJ_Uu-EYQzn-Jra7dbNVKMeQKdbUH6sMirdWeEoqiozoKCcjy6W3QJ7CTiME"/>
+</div>
+<span class="font-['Plus_Jakarta_Sans'] font-semibold tracking-tight text-xl text-[#036565]">AIPredict-Borsa</span>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-[#036565] hover:bg-[#f7f3ef] transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</header>
+<main class="px-6 space-y-8 max-w-2xl mx-auto">
+<!-- Hero Profile Section -->
+<section class="mt-4 flex flex-col items-center text-center">
+<div class="relative group">
+<div class="w-32 h-32 rounded-xl p-1 bg-gradient-to-tr from-primary to-tertiary">
+<img alt="User profile photo" class="w-full h-full object-cover rounded-xl border-4 border-surface" data-alt="high-quality profile headshot of a confident woman in a modern architectural office setting with warm sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUU4t1w7HpxDm717asxVN6j9QNc3mZPQNaH26HsKLcQlnMaQM-RT6JNKG7J2DqjsY9Huxc5ANm7sx89Mm-ZPzdGtU-VIGz0jgl2RaOI3CcAxiUefdK4NhD0Ks7BL41OBcB-CI3I0O7cqnfZY0wkaxs8HKlO3u3XZfQLOwqQDzLjgD6nPFXxRJvSOuZtvd3u1Xn-6-sPdmW7fH69Tjyd-Syrrn_nnxevJqX9_sgUnDBMgkgiGdcMNdHmdb2eRdrYIymOaVuojseHHk"/>
+</div>
+<div class="absolute -bottom-2 -right-2 bg-tertiary text-white p-2 rounded-full shadow-lg">
+<span class="material-symbols-outlined text-sm" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<h1 class="mt-6 font-headline font-extrabold text-3xl tracking-tight text-on-surface">Aslı Demir</h1>
+<div class="mt-1 px-4 py-1.5 rounded-full bg-primary-container text-on-primary-container font-label text-sm font-semibold">
+                Premium Investor
+            </div>
+</section>
+<!-- Stats Bento Grid -->
+<section class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-sm flex flex-col gap-2">
+<span class="text-secondary font-label text-xs font-semibold uppercase tracking-wider">Portföy Değeri</span>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-headline font-bold text-primary">₺842.500</span>
+</div>
+<div class="flex items-center gap-1 text-primary text-xs font-medium">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span>
+<span>12.4% Bu ay</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-sm flex flex-col gap-2">
+<span class="text-secondary font-label text-xs font-semibold uppercase tracking-wider">Öğrenilen Kavramlar</span>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-headline font-bold text-on-surface">128</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden mt-1">
+<div class="h-full bg-tertiary rounded-full" style="width: 72%"></div>
+</div>
+</div>
+</section>
+<!-- Navigation List -->
+<section class="space-y-3">
+<h3 class="font-headline font-bold text-lg text-on-surface-variant px-2">Hesap Yönetimi</h3>
+<div class="bg-surface-container-low rounded-lg overflow-hidden">
+<!-- Item: Hesap Ayarları -->
+<button class="w-full flex items-center justify-between p-5 hover:bg-surface-container transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="manage_accounts">manage_accounts</span>
+</div>
+<span class="font-medium text-on-surface">Hesap Ayarları</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</button>
+<!-- Item: Bildirim Tercihleri -->
+<button class="w-full flex items-center justify-between p-5 hover:bg-surface-container transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="notifications_active">notifications_active</span>
+</div>
+<span class="font-medium text-on-surface">Bildirim Tercihleri</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</button>
+<!-- Item: Güvenlik & Biyometrik -->
+<button class="w-full flex items-center justify-between p-5 hover:bg-surface-container transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="fingerprint">fingerprint</span>
+</div>
+<span class="font-medium text-on-surface">Güvenlik &amp; Biyometrik</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</button>
+<!-- Item: Uygulama Teması (Toggle) -->
+<div class="w-full flex items-center justify-between p-5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
+</div>
+<span class="font-medium text-on-surface">Uygulama Teması</span>
+</div>
+<button class="w-12 h-6 rounded-full bg-primary-container relative p-1 flex items-center">
+<div class="w-4 h-4 rounded-full bg-white ml-auto"></div>
+</button>
+</div>
+<!-- Item: Destek -->
+<button class="w-full flex items-center justify-between p-5 hover:bg-surface-container transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span>
+</div>
+<span class="font-medium text-on-surface">Destek</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</section>
+<!-- Log Out Section -->
+<section class="pt-4">
+<button class="w-full py-4 rounded-lg bg-surface-container-highest text-error font-headline font-bold flex items-center justify-center gap-2 hover:bg-error-container transition-colors">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                Oturumu Kapat
+            </button>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-[#fdf9f4]/80 backdrop-blur-xl shadow-[0_-10px_40px_rgba(28,27,25,0.06)] rounded-t-xl pb-safe">
+<!-- Explore -->
+<a class="flex flex-col items-center justify-center text-[#5f5e59] px-5 py-2.5 transition-all hover:text-[#036565]" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-['Manrope'] font-medium text-[11px]">Explore</span>
+</a>
+<!-- Portfolio -->
+<a class="flex flex-col items-center justify-center text-[#5f5e59] px-5 py-2.5 transition-all hover:text-[#036565]" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-['Manrope'] font-medium text-[11px]">Portfolio</span>
+</a>
+<!-- Academy -->
+<a class="flex flex-col items-center justify-center text-[#5f5e59] px-5 py-2.5 transition-all hover:text-[#036565]" href="#">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+<span class="font-['Manrope'] font-medium text-[11px]">Academy</span>
+</a>
+<!-- Profile (Active) -->
+<a class="flex flex-col items-center justify-center bg-[#036565] text-white rounded-full px-5 py-2.5 transition-all scale-100 shadow-lg" href="#">
+<span class="material-symbols-outlined" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-['Manrope'] font-medium text-[11px]">Profile</span>
+</a>
+</nav>
+</body></html>

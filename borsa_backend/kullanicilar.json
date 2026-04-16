@@ -3,5 +3,15 @@
         "ad": "Furkan Kalay",
         "sifre": "68724235fF.",
         "favoriler": []
+    },
+    "test@test.com": {
+        "ad": "Test",
+        "sifre": "123",
+        "favoriler": []
+    },
+    "ydmhalil@gmail.com": {
+        "ad": "Halil",
+        "sifre": "123456",
+        "favoriler": []
     }
 }

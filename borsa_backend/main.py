@@ -49,6 +49,17 @@ class GirisFormu(BaseModel):
     sifre: str
 
 
+class SifreDegistirFormu(BaseModel):
+    email: str
+    eski_sifre: str
+    yeni_sifre: str
+
+
+class AdGuncelleFormu(BaseModel):
+    email: str
+    yeni_ad: str
+
+
 @app.post("/kayit")
 def kayit_ol(form: KayitFormu):
     db = db_oku()
@@ -73,6 +84,44 @@ def giris_yap(form: GirisFormu):
         raise HTTPException(status_code=401, detail="E-posta veya şifre hatalı!")
 
     return {"mesaj": "Giriş Başarılı", "ad": kullanici["ad"]}
+
+
+@app.post("/sifre-degistir")
+def sifre_degistir(form: SifreDegistirFormu):
+    db = db_oku()
+    kullanici = db.get(form.email)
+
+    if not kullanici:
+        raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı.")
+
+    if kullanici["sifre"] != form.eski_sifre:
+        raise HTTPException(status_code=401, detail="Mevcut şifre yanlış.")
+
+    if len(form.yeni_sifre.strip()) < 6:
+        raise HTTPException(status_code=400, detail="Yeni şifre en az 6 karakter olmalı.")
+
+    kullanici["sifre"] = form.yeni_sifre.strip()
+    db[form.email] = kullanici
+    db_yaz(db)
+    return {"mesaj": "Şifre güncellendi."}
+
+
+@app.post("/ad-guncelle")
+def ad_guncelle(form: AdGuncelleFormu):
+    db = db_oku()
+    kullanici = db.get(form.email)
+
+    if not kullanici:
+        raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı.")
+
+    yeni_ad = form.yeni_ad.strip()
+    if not yeni_ad:
+        raise HTTPException(status_code=400, detail="Görünen ad boş olamaz.")
+
+    kullanici["ad"] = yeni_ad
+    db[form.email] = kullanici
+    db_yaz(db)
+    return {"mesaj": "Ad güncellendi.", "ad": yeni_ad}
 
 
 # --- YAPAY ZEKA TAHMİN MANTIGI ---
@@ -143,11 +192,13 @@ def hisse_tahmin_getir(hisse_kodu: str, zaman_dilimi: str = "1A"):
     gosterilecek_veri = veri.tail(limit)
     gosterilecek_gecmis = gosterilecek_veri['Close'].tolist()
 
-    if zaman_dilimi in ["1G", "1H"]:
-        zaman_format = "%H:%M"
-    elif zaman_dilimi in ["1A"]:
+    if zaman_dilimi == "1G":
+        zaman_format = "%H:%M"           # intraday: sadece saat yeterli
+    elif zaman_dilimi == "1H":
+        zaman_format = "%Y-%m-%d %H:%M"  # haftalık: gün + saat
+    elif zaman_dilimi == "1A":
         zaman_format = "%d %b"
-    elif zaman_dilimi in ["1Y"]:
+    elif zaman_dilimi == "1Y":
         zaman_format = "%d %b %Y"
     else:
         zaman_format = "%b %Y"
@@ -165,6 +216,91 @@ def hisse_tahmin_getir(hisse_kodu: str, zaman_dilimi: str = "1A"):
         "gecmis_grafik_verisi": [round(float(fiyat), 2) for fiyat in gosterilecek_gecmis],
         "gecmis_zaman_verisi": gecmis_zaman_verisi
     }
+
+
+# --- HABERLER ---
+from datetime import datetime, timezone
+
+def _haber_isle(h: dict) -> dict | None:
+    """Yeni yfinance .news formatını (content nested) parse eder."""
+    try:
+        c = h.get("content") or h  # yeni format: content nested; eski: düz
+        title = c.get("title") or h.get("title", "")
+        if not title:
+            return None
+
+        # URL
+        click = c.get("clickThroughUrl") or {}
+        canon = c.get("canonicalUrl") or {}
+        url = (click.get("url") or canon.get("url")
+               or h.get("link") or h.get("url") or "")
+
+        # Publisher
+        prov = c.get("provider") or {}
+        kaynak = (prov.get("displayName") or prov.get("source")
+                  or h.get("publisher") or "")
+
+        # Zaman → Unix timestamp
+        zaman = 0
+        pub = c.get("pubDate") or ""
+        if pub:
+            try:
+                dt = datetime.fromisoformat(pub.replace("Z", "+00:00"))
+                zaman = int(dt.timestamp())
+            except Exception:
+                pass
+        if not zaman:
+            zaman = h.get("providerPublishTime", 0)
+
+        # Thumbnail
+        resim = ""
+        thumb = c.get("thumbnail") or h.get("thumbnail") or {}
+        resim = (thumb.get("originalUrl") or thumb.get("url") or "")
+        if not resim:
+            resolutions = thumb.get("resolutions") or []
+            if resolutions:
+                resim = resolutions[0].get("url", "")
+
+        return {"baslik": title, "kaynak": kaynak,
+                "url": url, "zaman": zaman, "resim": resim}
+    except Exception:
+        return None
+
+@app.get("/haberler")
+def haberler_getir():
+    """Popüler hisse ve kripto haberlerini döner (yfinance .news)."""
+    kaynaklar = ["AAPL", "TSLA", "NVDA", "MSFT", "BTC-USD", "ETH-USD", "SPY"]
+    toplam = []
+    goruldu = set()
+    for sembol in kaynaklar:
+        try:
+            for h in (yf.Ticker(sembol).news or [])[:3]:
+                item = _haber_isle(h)
+                if not item or not item["url"] or item["url"] in goruldu:
+                    continue
+                goruldu.add(item["url"])
+                toplam.append(item)
+        except Exception:
+            pass
+    toplam.sort(key=lambda x: x["zaman"], reverse=True)
+    return {"haberler": toplam[:12]}
+
+
+@app.get("/haberler/{hisse_kodu}")
+def hisse_haberleri(hisse_kodu: str):
+    """Belirli bir hisseye ait haberleri döner."""
+    sonuc = []
+    goruldu = set()
+    try:
+        for h in (yf.Ticker(hisse_kodu.upper()).news or [])[:8]:
+            item = _haber_isle(h)
+            if not item or not item["url"] or item["url"] in goruldu:
+                continue
+            goruldu.add(item["url"])
+            sonuc.append(item)
+    except Exception:
+        pass
+    return {"haberler": sonuc}
 
 
 # --- TARAYICI MANTIGI ---

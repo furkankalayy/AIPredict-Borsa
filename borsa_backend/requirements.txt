@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+yfinance
+numpy
+pandas
+tensorflow-cpu
+joblib
+scikit-learn
+pydantic
+httpx
