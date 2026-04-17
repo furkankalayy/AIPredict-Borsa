@@ -14,7 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // Local geliştirme: "http://192.168.1.8:8000"
 // HF Spaces prod: "https://KULLANICI_ADIN-aipredict-borsa.hf.space"
-const kBaseUrl = "http://192.168.1.8:8000";
+const kBaseUrl = "https://aipredict-borsa.onrender.com";
 
 // ══════════════════════════════════════════════════════════════════
 //  TEMA NOTIFIER
