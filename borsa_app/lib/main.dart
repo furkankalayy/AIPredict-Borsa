@@ -79,6 +79,22 @@ void yakinda(BuildContext ctx, [String mesaj = "Bu özellik yakında geliyor."])
   ));
 }
 
+String _kullaniciKapsami(String email) {
+  final temiz = email.trim().toLowerCase();
+  if (temiz.isEmpty) return 'anonim';
+  return temiz.replaceAll(RegExp(r'[^a-z0-9]'), '_');
+}
+
+Future<String> _aktifKullaniciKapsami() async {
+  final prefs = await SharedPreferences.getInstance();
+  final email = prefs.getString('kullanici_email') ?? '';
+  return _kullaniciKapsami(email);
+}
+
+String _kullaniciBazliAnahtar(String temelAnahtar, String kapsam) {
+  return '${temelAnahtar}__$kapsam';
+}
+
 void bildirimSheet(BuildContext ctx) {
   showModalBottomSheet(
     context: ctx,
@@ -724,20 +740,24 @@ class _KesfetEkraniState extends State<KesfetEkrani> {
 
   Future<void> _gecmisiYukle() async {
     final prefs = await SharedPreferences.getInstance();
+    final kapsam = await _aktifKullaniciKapsami();
+    final anahtar = _kullaniciBazliAnahtar('arama_gecmisi', kapsam);
     if (mounted) {
       setState(() {
-        aramaGecmisi = prefs.getStringList('arama_gecmisi') ?? [];
+        aramaGecmisi = prefs.getStringList(anahtar) ?? [];
       });
     }
   }
 
   Future<void> _gecmiseEkle(String kod) async {
     final prefs = await SharedPreferences.getInstance();
-    final liste = prefs.getStringList('arama_gecmisi') ?? [];
+    final kapsam = await _aktifKullaniciKapsami();
+    final anahtar = _kullaniciBazliAnahtar('arama_gecmisi', kapsam);
+    final liste = prefs.getStringList(anahtar) ?? [];
     liste.remove(kod);
     liste.insert(0, kod);
     final yeni = liste.take(5).toList();
-    await prefs.setStringList('arama_gecmisi', yeni);
+    await prefs.setStringList(anahtar, yeni);
     if (mounted) setState(() => aramaGecmisi = yeni);
   }
 
@@ -953,7 +973,9 @@ class _KesfetEkraniState extends State<KesfetEkrani> {
             GestureDetector(
               onTap: () async {
                 final prefs = await SharedPreferences.getInstance();
-                await prefs.remove('arama_gecmisi');
+                final kapsam = await _aktifKullaniciKapsami();
+                final anahtar = _kullaniciBazliAnahtar('arama_gecmisi', kapsam);
+                await prefs.remove(anahtar);
                 if (mounted) setState(() => aramaGecmisi = []);
               },
               child: Text("Temizle", style: bd(12, color: C.tertiary, fw: FontWeight.w600)),
@@ -1507,7 +1529,9 @@ class _PortfolioEkraniState extends State<PortfolioEkrani> {
 
   Future<void> _varliklariYukle() async {
     final prefs = await SharedPreferences.getInstance();
-    final ham = prefs.getString('portfoy_varliklari');
+    final kapsam = await _aktifKullaniciKapsami();
+    final anahtar = _kullaniciBazliAnahtar('portfoy_varliklari', kapsam);
+    final ham = prefs.getString(anahtar);
     if (ham != null && ham.isNotEmpty) {
       try {
         final decoded = json.decode(ham) as Map<String, dynamic>;
@@ -1546,6 +1570,8 @@ class _PortfolioEkraniState extends State<PortfolioEkrani> {
 
   Future<void> _varliklariKaydet() async {
     final prefs = await SharedPreferences.getInstance();
+    final kapsam = await _aktifKullaniciKapsami();
+    final anahtar = _kullaniciBazliAnahtar('portfoy_varliklari', kapsam);
     final kayit = <String, dynamic>{};
     for (final e in varliklar.entries) {
       kayit[e.key] = {
@@ -1553,7 +1579,7 @@ class _PortfolioEkraniState extends State<PortfolioEkrani> {
         'maliyet': maliyetler[e.key] ?? 0,
       };
     }
-    await prefs.setString('portfoy_varliklari', json.encode(kayit));
+    await prefs.setString(anahtar, json.encode(kayit));
   }
 
   Set<String> _takipSembolleri() {
@@ -2287,14 +2313,18 @@ class _AkademiEkraniState extends State<AkademiEkrani> {
 
   Future<void> _tamamlananYukle() async {
     final prefs = await SharedPreferences.getInstance();
-    final liste = prefs.getStringList('tamamlanan_dersler') ?? [];
+    final kapsam = await _aktifKullaniciKapsami();
+    final anahtar = _kullaniciBazliAnahtar('tamamlanan_dersler', kapsam);
+    final liste = prefs.getStringList(anahtar) ?? [];
     if (mounted) setState(() => tamamlananlar = liste.map(int.parse).toSet());
   }
 
   Future<void> _dersiTamamla(int idx) async {
     final prefs = await SharedPreferences.getInstance();
+    final kapsam = await _aktifKullaniciKapsami();
+    final anahtar = _kullaniciBazliAnahtar('tamamlanan_dersler', kapsam);
     setState(() => tamamlananlar.add(idx));
-    await prefs.setStringList('tamamlanan_dersler', tamamlananlar.map((e) => e.toString()).toList());
+    await prefs.setStringList(anahtar, tamamlananlar.map((e) => e.toString()).toList());
   }
 
   Future<void> _dersDetayaGit(int idx, Map<String, dynamic> d) async {
@@ -2825,10 +2855,14 @@ class _ProfilEkraniState extends State<ProfilEkrani> {
 
   Future<void> _bildirimleriYukle() async {
     final p = await SharedPreferences.getInstance();
+    final kapsam = await _aktifKullaniciKapsami();
+    final fiyatAnahtar = _kullaniciBazliAnahtar('bildirim_fiyat', kapsam);
+    final piyasaAnahtar = _kullaniciBazliAnahtar('bildirim_piyasa', kapsam);
+    final haftalikAnahtar = _kullaniciBazliAnahtar('bildirim_haftalik', kapsam);
     if (mounted) setState(() {
-      _bildirimFiyat    = p.getBool('bildirim_fiyat')    ?? true;
-      _bildirimPiyasa   = p.getBool('bildirim_piyasa')   ?? false;
-      _bildirimHaftalik = p.getBool('bildirim_haftalik') ?? true;
+      _bildirimFiyat    = p.getBool(fiyatAnahtar) ?? true;
+      _bildirimPiyasa   = p.getBool(piyasaAnahtar) ?? false;
+      _bildirimHaftalik = p.getBool(haftalikAnahtar) ?? true;
     });
   }
 
@@ -2958,17 +2992,26 @@ class _ProfilEkraniState extends State<ProfilEkrani> {
                 _bildirimSatiri(ctx, setS, "Fiyat Uyarıları", "Belirlediğin hedef fiyatlara ulaşınca", _bildirimFiyat, (v) async {
                   setS(() => _bildirimFiyat = v);
                   setState(() => _bildirimFiyat = v);
-                  (await SharedPreferences.getInstance()).setBool('bildirim_fiyat', v);
+                  final prefs = await SharedPreferences.getInstance();
+                  final kapsam = await _aktifKullaniciKapsami();
+                  final anahtar = _kullaniciBazliAnahtar('bildirim_fiyat', kapsam);
+                  await prefs.setBool(anahtar, v);
                 }),
                 _bildirimSatiri(ctx, setS, "Piyasa Özeti", "Günlük piyasa açılış/kapanış özeti", _bildirimPiyasa, (v) async {
                   setS(() => _bildirimPiyasa = v);
                   setState(() => _bildirimPiyasa = v);
-                  (await SharedPreferences.getInstance()).setBool('bildirim_piyasa', v);
+                  final prefs = await SharedPreferences.getInstance();
+                  final kapsam = await _aktifKullaniciKapsami();
+                  final anahtar = _kullaniciBazliAnahtar('bildirim_piyasa', kapsam);
+                  await prefs.setBool(anahtar, v);
                 }),
                 _bildirimSatiri(ctx, setS, "Haftalık Rapor", "Her Pazartesi portföy özeti", _bildirimHaftalik, (v) async {
                   setS(() => _bildirimHaftalik = v);
                   setState(() => _bildirimHaftalik = v);
-                  (await SharedPreferences.getInstance()).setBool('bildirim_haftalik', v);
+                  final prefs = await SharedPreferences.getInstance();
+                  final kapsam = await _aktifKullaniciKapsami();
+                  final anahtar = _kullaniciBazliAnahtar('bildirim_haftalik', kapsam);
+                  await prefs.setBool(anahtar, v);
                 }),
               ]),
             ),
