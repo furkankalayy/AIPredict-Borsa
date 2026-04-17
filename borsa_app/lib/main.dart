@@ -279,7 +279,7 @@ class _LoginEkraniState extends State<LoginEkrani> {
           .post(Uri.parse(url),
               headers: {"Content-Type": "application/json"},
               body: jsonEncode(body))
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 60));
       final data = json.decode(utf8.decode(res.bodyBytes));
       if (res.statusCode == 200) {
         final ad = (data["ad"] ?? _adCtrl.text.trim()).toString();
@@ -298,6 +298,8 @@ class _LoginEkraniState extends State<LoginEkrani> {
       } else {
         _snack(data["detail"] ?? "Hata oluştu.");
       }
+    } on TimeoutException {
+      _snack("Sunucu uyanıyor olabilir. Lütfen 20-60 sn sonra tekrar dene.");
     } catch (_) {
       _snack("Sunucuya bağlanılamadı.");
     }
@@ -751,7 +753,7 @@ class _KesfetEkraniState extends State<KesfetEkrani> {
     try {
       final res = await http
           .get(Uri.parse("$kBaseUrl/haberler"))
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 60));
       if (res.statusCode == 200) {
         final data = json.decode(res.body);
         if (mounted) {
@@ -808,8 +810,9 @@ class _KesfetEkraniState extends State<KesfetEkrani> {
     try {
       final pazar = pazarlarApi[aktifPazar];
       final kat   = filtrelerApi[i];
-      final res = await http.get(
-          Uri.parse("$kBaseUrl/tarayici?pazar=$pazar&kategori=$kat"));
+        final res = await http
+          .get(Uri.parse("$kBaseUrl/tarayici?pazar=$pazar&kategori=$kat"))
+          .timeout(const Duration(seconds: 60));
       if (res.statusCode == 200) {
         setState(() {
           sonuclar = json.decode(res.body)['sonuclar'];
@@ -1577,7 +1580,7 @@ class _PortfolioEkraniState extends State<PortfolioEkrani> {
           'https://query1.finance.yahoo.com/v8/finance/chart/$sembol?interval=1d&range=1d',
         ),
         headers: {'User-Agent': 'Mozilla/5.0'},
-      ).timeout(const Duration(seconds: 10)));
+      ).timeout(const Duration(seconds: 60)));
 
       final yanitlar = await Future.wait(futures, eagerError: false);
       final yeni = <String, Map<String, dynamic>>{};
@@ -2897,7 +2900,7 @@ class _ProfilEkraniState extends State<ProfilEkrani> {
                                 "yeni_ad": yeniAd,
                               }),
                             )
-                            .timeout(const Duration(seconds: 10));
+                            .timeout(const Duration(seconds: 60));
                         if (res.statusCode != 200) {
                           final data = json.decode(utf8.decode(res.bodyBytes));
                           hata = data["detail"]?.toString() ?? "Ad sunucuya kaydedilemedi.";
@@ -3431,7 +3434,7 @@ class _SifreDegistirEkraniState extends State<SifreDegistirEkrani> {
               "yeni_sifre": yeni,
             }),
           )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 60));
 
       final data = json.decode(utf8.decode(res.bodyBytes));
       if (res.statusCode == 200) {
@@ -3799,7 +3802,7 @@ class _HisseDetaySayfasiState extends State<HisseDetaySayfasi> {
     try {
       final res = await http
           .get(Uri.parse("$kBaseUrl/haberler/${widget.hisseKodu}"))
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 60));
       if (res.statusCode == 200 && mounted) {
         final data = json.decode(res.body);
         setState(() {
